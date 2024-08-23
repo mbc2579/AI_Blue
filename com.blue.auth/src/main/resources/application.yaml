@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    default: dev
+  application:
+    name: auth
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
+        highlight_sql: true
+server:
+  port: 19093
+  servlet:
+    context-path: /api
+
+springdoc:
+  swagger-ui:
+    path: /auth/swagger-ui
+  api-docs:
+    path: /auth/v3/api-docs
+
+service:
+  jwt:
+    secret-key: # JWT 시크릿 키
