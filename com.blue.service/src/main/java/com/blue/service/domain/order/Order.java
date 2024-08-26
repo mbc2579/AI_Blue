@@ -32,6 +32,9 @@ public class Order extends BaseEntity {
     @Column(name = "dest_id", nullable = false)
     private UUID destId;
 
+    @Column(name = "order_type")
+    private OrderType orderType;
+
     @Column(name = "is_reviewed")
     private boolean isReviewed;
 
