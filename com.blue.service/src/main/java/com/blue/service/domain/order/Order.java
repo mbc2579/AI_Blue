@@ -1,15 +1,15 @@
 package com.blue.service.domain.order;
 
 import com.blue.service.domain.BaseEntity;
+import com.blue.service.domain.Store;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.UUID;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +24,7 @@ public class Order extends BaseEntity {
 
 //    @ManyToOne
 //    @JoinColumn(name = "store_id")
+//    private Store store;
     @Column(name = "store_id", nullable = false)
     private UUID storeId;
 
@@ -38,4 +39,7 @@ public class Order extends BaseEntity {
     @Column(name = "is_reviewed")
     private boolean isReviewed;
 
+    public void updateOrder(boolean isReviewed){
+        this.isReviewed = isReviewed;
+    }
 }
