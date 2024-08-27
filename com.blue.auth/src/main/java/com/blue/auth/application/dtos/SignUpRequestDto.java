@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SignUpRequestDto {
     private String userName;
-    private String password;
     private String phoneNumber;
+    private String password;
     private UserRoleEnum role;
-
+    private String token;
 }

@@ -14,11 +14,11 @@ public class User {
     @Column(name="user_name", nullable = false)
     private String userName;
 
-    @Column
-    private String password;
+    @Column(name="phone_number")
+    private String phoneNumber;
 
     @Column
-    private String phoneNumber;
+    private String password;
 
     @Column
     @Enumerated(value=EnumType.STRING)
