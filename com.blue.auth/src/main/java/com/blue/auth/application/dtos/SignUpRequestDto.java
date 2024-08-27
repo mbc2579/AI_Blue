@@ -13,7 +13,6 @@ public class SignUpRequestDto {
     private String userName;
     private String password;
     private String phoneNumber;
-    private String ownerToken = "";
     private boolean owner = false;
     private String adminToken = "";
     private boolean admin = false;

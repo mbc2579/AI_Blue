@@ -26,7 +26,7 @@ public class AuthService {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
     }
 
-    private final String OWNER_TOKEN = "owner";
+    // 임시로 정해둔 Key 값
     private final String ADMIN_TOKEN = "admin";
     private final String MASTER_TOKEN = "master";
 
@@ -42,10 +42,8 @@ public class AuthService {
         }
 
         UserRoleEnum role = UserRoleEnum.USER;
+
         if(requestDto.isOwner()){
-            if(!OWNER_TOKEN.equals(requestDto.getOwnerToken())) {
-                throw new IllegalArgumentException("사장님 암호가 틀려 등록이 불가합니다.");
-            }
             role = UserRoleEnum.OWNER;
         }else if(requestDto.isAdmin()){
             if(!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
