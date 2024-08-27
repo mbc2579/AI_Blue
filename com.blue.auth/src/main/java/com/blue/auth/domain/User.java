@@ -1,5 +1,6 @@
 package com.blue.auth.domain;
 
+import com.blue.auth.application.dtos.SignUpRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 import com.blue.auth.domain.UserRoleEnum;
@@ -24,4 +25,5 @@ public class User {
     @Column
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
+
 }
