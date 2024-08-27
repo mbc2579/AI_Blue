@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +40,19 @@ public class OrderController {
             @RequestHeader(name = "X-User-Name") String userName
             ){
         return ResponseEntity.ok(orderService.getOrder(orderId, userName));
+    }
+
+    @GetMapping
+    @Operation(summary = "주문 검색")
+    public ResponseEntity<List<OrderResDto>> searchOrder(
+            @RequestHeader(name = "X-User-Name") String userName,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "limit") int limit,
+            @RequestParam(name = "isAsc") Boolean isAsc,
+            @RequestParam(name = "orderBy") String orderBy,
+            @RequestParam(name = "keyword", required = false) String keyword
+    ){
+        return ResponseEntity.ok(orderService.searchOrder(userName, page, limit, isAsc, orderBy, keyword));
     }
 
     @PutMapping
