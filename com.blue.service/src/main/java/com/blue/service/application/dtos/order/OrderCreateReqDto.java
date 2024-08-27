@@ -21,8 +21,8 @@ public class OrderCreateReqDto {
     public Order toOrder(String userName) {
         return Order.builder()
                 .orderId(UUID.randomUUID())
-                .userName(userName)
                 .storeId(this.storeId)
+                .userName(userName)
                 .destId(this.destId)
                 .orderType(this.orderType)
                 .isReviewed(false)

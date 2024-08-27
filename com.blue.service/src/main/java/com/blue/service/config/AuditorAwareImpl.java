@@ -9,13 +9,13 @@ import java.util.Optional;
 
 class AuditorAwareImpl implements AuditorAware<String> {
 
-        @Override
-        public Optional<String> getCurrentAuditor() {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            String modifiedBy = request.getHeader("X-User-Name");
-            if (modifiedBy == null) {
-                throw new SecurityException("X-User-Name is required");
-            }
-            return Optional.of(modifiedBy);
+    @Override
+    public Optional<String> getCurrentAuditor() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String modifiedBy = request.getHeader("X-User-Name");
+        if (modifiedBy == null) {
+            throw new SecurityException("X-User-Name is required");
         }
+        return Optional.of(modifiedBy);
     }
+}

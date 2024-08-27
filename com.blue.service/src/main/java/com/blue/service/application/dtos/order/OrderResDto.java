@@ -7,14 +7,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderCreateResDto {
+public class OrderResDto {
     private UUID orderId;
     private String userName;
     private UUID storeId;
@@ -22,10 +21,11 @@ public class OrderCreateResDto {
     private OrderType orderType;
     private boolean isReviewed;
 
-    public static OrderCreateResDto from(Order order) {
-        return OrderCreateResDto.builder()
+    public static OrderResDto from(Order order) {
+        return OrderResDto.builder()
                 .orderId(order.getOrderId())
                 .userName(order.getUserName())
+//                .storeId(order.getStore().getStoreId())
                 .storeId(order.getStoreId())
                 .destId(order.getDestId())
                 .orderType(order.getOrderType())
