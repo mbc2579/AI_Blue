@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,8 +28,8 @@ public class AuthService {
     }
 
     // 임시로 정해둔 Key 값
-    private final String ADMIN_TOKEN = "admin";
-    private final String MASTER_TOKEN = "master";
+    private final String ADMIN_TOKEN = "ADMIN";
+    private final String MASTER_TOKEN = "MASTER";
 
     @Transactional
     public void signUp(final SignUpRequestDto requestDto) {
@@ -41,24 +42,7 @@ public class AuthService {
             throw new IllegalArgumentException("중복된 사용자 존재");
         }
 
-        UserRoleEnum role = UserRoleEnum.USER;
 
-        if(requestDto.isOwner()){
-            role = UserRoleEnum.OWNER;
-        }else if(requestDto.isAdmin()){
-            if(!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가합니다.");
-            }
-            role = UserRoleEnum.ADMIN;
-        }else if(requestDto.isMaster()){
-            if(!MASTER_TOKEN.equals(requestDto.getMasterToken())) {
-                throw new IllegalArgumentException("마스터 암호가 틀려 등록이 불가합니다.");
-            }
-            role = UserRoleEnum.MASTER;
-        }
-
-        User user = new User(userName, password, phoneNumber, role);
-        userRepository.save(user);
     }
 
 }

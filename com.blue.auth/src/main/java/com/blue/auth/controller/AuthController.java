@@ -21,8 +21,8 @@ public class AuthController {
 
     @PostMapping("/signUp")
     public ResponseEntity<Boolean> signUp(@RequestBody SignUpRequestDto requestDto){
-        authService.signUp(requestDto);
-        return createResponse(ResponseEntity.ok(true), requestDto.getUserName());
+        String userName = requestDto.getUserName();
+        return createResponse(ResponseEntity.ok(true), userName);
     }
 
     public <T>ResponseEntity<T> createResponse(ResponseEntity<T> response, String userName){
