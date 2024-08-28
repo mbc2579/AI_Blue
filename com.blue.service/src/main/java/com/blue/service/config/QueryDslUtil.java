@@ -1,6 +1,7 @@
 package com.blue.service.config;
 
 import com.blue.service.domain.order.QOrder;
+import com.blue.service.domain.payment.QPayment;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -33,6 +34,9 @@ public class QueryDslUtil {
                         case "order":
                             path = QOrder.order;
                             break;
+                        case "payment":
+                            path = QPayment.payment;
+                            break;
                         default:
                             throw new IllegalArgumentException("Entity의 타입이 잘못되었음");
                     }
@@ -44,6 +48,9 @@ public class QueryDslUtil {
                     switch (entityType){
                         case "order":
                             path = QOrder.order;
+                            break;
+                        case "payment":
+                            path = QPayment.payment;
                             break;
                         default:
                             throw new IllegalArgumentException("Entity의 타입이 잘못되었음");
