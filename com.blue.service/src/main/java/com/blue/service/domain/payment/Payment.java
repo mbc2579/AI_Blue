@@ -1,9 +1,8 @@
 package com.blue.service.domain.payment;
 
 import com.blue.service.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.blue.service.domain.order.Order;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,10 +23,9 @@ public class Payment extends BaseEntity {
     @Column(name = "user_name", nullable = false , length = 100)
     private String userName;
 
-    //    @OneToOne
-//    @JoinColumn(name = "order_id")
-    @Column(name = "order_id", nullable = false)
-    private UUID orderId;
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Column(name = "p_result_id")
     private String pResultId;

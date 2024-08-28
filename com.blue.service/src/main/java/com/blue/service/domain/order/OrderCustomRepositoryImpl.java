@@ -4,7 +4,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -29,7 +28,8 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
                 .selectFrom(order)
                 .distinct()
                 .where(
-                        order.userName.eq(userName)
+                        order.userName.eq(userName),
+                        order.deletedAt.isNull()
                         //가게명 조건 추가 필요 가게명 contains keyword
                 )
                 .offset(pageable.getOffset())
@@ -40,7 +40,10 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository{
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(order.count())
                 .from(order)
-                .where(order.userName.eq(userName));
+                .where(
+                        order.userName.eq(userName),
+                        order.deletedAt.isNull()
+                );
 
         return PageableExecutionUtils.getPage(query, pageable, () -> countQuery.fetchOne());
     }
