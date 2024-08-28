@@ -48,8 +48,8 @@ public class OrderService {
         return OrderResDto.from(order);
     }
 
-    public List<OrderResDto> searchOrder(String userName, int page, int limit,
-                                         Boolean isAsc, String orderBy, String keyword) {
+    public List<OrderResDto> searchOrders(String userName, int page, int limit,
+                                          Boolean isAsc, String orderBy, String keyword) {
         Sort.Direction direction;
         if(isAsc){
             direction = Sort.Direction.ASC;
