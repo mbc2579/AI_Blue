@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(access = AccessLevel.PRIVATE)
-public class User {
+public class User extends BaseEntity {
     @Id
     @Column(name="user_name", nullable = false)
     private String userName;
@@ -17,10 +17,10 @@ public class User {
     @Column(name="phone_number")
     private String phoneNumber;
 
-    @Column
+    @Column(name="password")
     private String password;
 
-    @Column
+    @Column(name="role")
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
 

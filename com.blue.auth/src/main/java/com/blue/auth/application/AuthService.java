@@ -2,20 +2,15 @@ package com.blue.auth.application;
 
 import com.blue.auth.application.dtos.LogInRequestDto;
 import com.blue.auth.application.dtos.SignUpRequestDto;
-import com.blue.auth.application.dtos.TokenResponse;
 import com.blue.auth.domain.User;
 import com.blue.auth.domain.UserRepository;
 import com.blue.auth.domain.UserRoleEnum;
 import com.blue.auth.jwt.JwtUtil;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.crypto.SecretKey;
 import java.util.Optional;
 
 @Service
@@ -41,17 +36,20 @@ public class AuthService {
         String password = passwordEncoder.encode(requestDto.getPassword());
         String phoneNumber = requestDto.getPhoneNumber();
         UserRoleEnum role = requestDto.getRole();
+        String token = requestDto.getToken();
 
         Optional<User> checkUserName = userRepository.findByUserName(userName);
         if(checkUserName.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자 존재");
         }
 
-        if(!requestDto.getToken().isEmpty()){
-            if(requestDto.getToken().equals(ADMIN_TOKEN)&&role == UserRoleEnum.ADMIN) {
+        if(!token.isEmpty()){
+            if(token.equals(ADMIN_TOKEN)&&role.equals(UserRoleEnum.ADMIN)) {
                 role = UserRoleEnum.ADMIN;
-            }else if(requestDto.getToken().equals(MASTER_TOKEN)&&role == UserRoleEnum.MASTER) {
+            }else if(token.equals(MASTER_TOKEN)&&role.equals(UserRoleEnum.MASTER)) {
                 role = UserRoleEnum.MASTER;
+            }else {
+                throw new IllegalArgumentException("권한 토큰이 일치하지 않습니다.");
             }
         }
 

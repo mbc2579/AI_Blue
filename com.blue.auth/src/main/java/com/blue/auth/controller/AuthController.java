@@ -3,6 +3,7 @@ package com.blue.auth.controller;
 import com.blue.auth.application.AuthService;
 import com.blue.auth.application.dtos.SignUpRequestDto;
 import com.blue.auth.security.UserDetailsImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/signUp")
-    public ResponseEntity<Boolean> signUp(@RequestBody SignUpRequestDto requestDto){
+    public ResponseEntity<Boolean> signUp(@Valid @RequestBody SignUpRequestDto requestDto){
         authService.signUp(requestDto);
         String userName = requestDto.getUserName();
         return createResponse(ResponseEntity.ok(true), userName);
