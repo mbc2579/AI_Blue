@@ -9,6 +9,35 @@ spring:
     name: gateway
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allow-credentials: true
+            allowedHeaders:
+              - x-requested-with
+              - Authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+              - X-User-Name
+            exposedHeaders:
+              - x-requested-with
+              - Authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+              - X-User-Name
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
       routes:
         - id: auth
           uri: lb://auth
