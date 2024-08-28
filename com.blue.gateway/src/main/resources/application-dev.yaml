@@ -8,7 +8,6 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - 'http://localhost:19091'
               - 'http://localhost:19092'
 eureka:
   client:
