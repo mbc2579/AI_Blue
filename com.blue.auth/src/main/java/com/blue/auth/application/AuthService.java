@@ -57,7 +57,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void logIn(LogInRequestDto requestDto, HttpServletResponse response){
+    public void logIn(LogInRequestDto requestDto){
         String userName = requestDto.getUserName();
         String password = requestDto.getPassword();
 
@@ -69,7 +69,7 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.createToken(user.getUserName(), user.getRole());
+        String token = jwtUtil.createToken(user.getUserName());
         jwtUtil.addJwtToCookie(token, response);
     }
 

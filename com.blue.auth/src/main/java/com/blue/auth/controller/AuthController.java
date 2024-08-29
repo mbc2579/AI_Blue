@@ -1,12 +1,11 @@
 package com.blue.auth.controller;
 
 import com.blue.auth.application.AuthService;
+import com.blue.auth.application.dtos.LogInRequestDto;
 import com.blue.auth.application.dtos.SignUpRequestDto;
-import com.blue.auth.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,8 +19,9 @@ public class AuthController {
     }
 
     @PostMapping("/logIn")
-    public ResponseEntity<Boolean> logIn(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        String userName = userDetails.getUsername();
+    public ResponseEntity<Boolean> logIn(@RequestBody LogInRequestDto requestDto){
+        authService.logIn(requestDto);
+        String userName = requestDto.getUserName();
         return createResponse(ResponseEntity.ok(true), userName);
     }
 
