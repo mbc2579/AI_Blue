@@ -3,13 +3,11 @@ package com.blue.service.application;
 import com.blue.service.application.dtos.ProductReqDto;
 import com.blue.service.application.dtos.ProductResDto;
 import com.blue.service.application.dtos.StoreResDto;
-import com.blue.service.domain.Product;
-import com.blue.service.domain.ProductRepository;
-import com.blue.service.domain.Store;
-import com.blue.service.domain.StoreRepository;
+import com.blue.service.domain.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +26,9 @@ public class ProductService {
 
     private final StoreRepository storeRepository;
     private final ProductRepository productRepository;
+
+    @Autowired
+    private DescriptionGenerator descriptionGenerator;
 
     // 메뉴 전체 조회
     public List<ProductResDto> getProducts(UUID storeId) {
@@ -49,14 +50,25 @@ public class ProductService {
     public ProductResDto createProduct(UUID storeId, ProductReqDto reqDto, String userName) {
         Optional<Store> store = storeRepository.findById(storeId);
 
-        if(!store.isPresent() || !store.get().getUserName().equals(userName)) {
+        if (!store.isPresent() || !store.get().getUserName().equals(userName)) {
             log.error("해당 가게는 존재하지 않거나 사장님만 작성 가능합니다.");
             return null;
         }
 
-        Product product = new Product(reqDto, store.get());
+        // AI를 사용하여 설명 생성
+        DescriptionGenerator descriptionGenerator = new DescriptionGenerator();
+        String aiDescription = descriptionGenerator.generateDescription(reqDto.getProductName() + " 메뉴 설명해줘 50자 이내로");
 
+        // AI 설명 로그 출력
+        System.out.println("Generated AI Description: " + aiDescription);
+
+        // Product 객체 생성
+        Product product = new Product(reqDto, store.get(), aiDescription);
+
+        // Product 저장
         productRepository.save(product);
+
+        // 응답 반환
         return new ProductResDto(product);
     }
 
@@ -78,7 +90,13 @@ public class ProductService {
             return null;
         }
 
+        // AI로부터 새로운 설명 생성
+        String newDescription = descriptionGenerator.generateDescription(reqDto.getProductName() + " 메뉴 설명해줘 50자 이내로");
         product.update(reqDto);
+        product.setDescription(newDescription);
+
+        productRepository.save(product);
+
         log.info("메뉴 수정 완료");
         return new ProductResDto(product);
     }
