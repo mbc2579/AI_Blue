@@ -1,6 +1,5 @@
 package com.blue.auth.jwt;
 
-import com.blue.auth.domain.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
