@@ -5,6 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Table(name="p_users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,5 +24,10 @@ public class User extends BaseEntity {
     @Column(name="role")
     @Enumerated(value=EnumType.STRING)
     private UserRoleEnum role;
+
+    public void userUpdate(String phoneNumber, String password) {
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
 
 }

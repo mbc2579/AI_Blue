@@ -1,10 +1,14 @@
 package com.blue.auth.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUserName(String userName);
-    Optional<User> findByUserNameAndDeletedAtIsNull(String userName);
+
+    @Query("SELECT u FROM User u WHERE u.userName=:userName AND u.deletedAt IS NULL")
+    Optional<User> findByUserNameAndDeletedAtIsNull(@Param("userName") String userName);
+
 }
