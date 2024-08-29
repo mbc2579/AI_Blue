@@ -2,15 +2,18 @@ package com.blue.auth.application;
 
 import com.blue.auth.application.dtos.LogInRequestDto;
 import com.blue.auth.application.dtos.SignUpRequestDto;
+import com.blue.auth.application.dtos.UpdateRequestDto;
 import com.blue.auth.domain.User;
 import com.blue.auth.domain.UserRepository;
 import com.blue.auth.domain.UserRoleEnum;
 import com.blue.auth.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -38,7 +41,7 @@ public class AuthService {
         UserRoleEnum role = requestDto.getRole();
         String token = requestDto.getToken();
 
-        Optional<User> checkUserName = userRepository.findByUserName(userName);
+        Optional<User> checkUserName = userRepository.findByUserNameAndDeletedAtIsNull(userName);
         if(checkUserName.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자 존재");
         }
@@ -57,11 +60,11 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void logIn(LogInRequestDto requestDto){
+    public void logIn(LogInRequestDto requestDto, HttpServletResponse response){
         String userName = requestDto.getUserName();
         String password = requestDto.getPassword();
 
-        User user = userRepository.findByUserName(userName).orElseThrow(
+        User user = userRepository.findByUserNameAndDeletedAtIsNull(userName).orElseThrow(
                 ()->new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
 
@@ -71,6 +74,30 @@ public class AuthService {
 
         String token = jwtUtil.createToken(user.getUserName());
         jwtUtil.addJwtToCookie(token, response);
+    }
+
+    @Transactional
+    public void userEdit(String userName, UpdateRequestDto requestDto){
+        String phoneNumber = requestDto.getPhoneNumber();
+        String password = passwordEncoder.encode(requestDto.getPassword());
+
+        User user = userRepository.findByUserNameAndDeletedAtIsNull(userName).orElseThrow(
+                ()-> new IllegalArgumentException("수정하려는 사용자 정보가 없습니다.")
+        );
+
+        user.userUpdate(phoneNumber, password);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void userWithdraw(String userName){
+        User user = userRepository.findByUserNameAndDeletedAtIsNull(userName).orElseThrow(
+                ()-> new IllegalArgumentException("이미 탈퇴한 사용자 입니다.")
+        );
+
+        user.setDeleted(LocalDateTime.now(), userName);
+        userRepository.save(user);
+
     }
 
 }
