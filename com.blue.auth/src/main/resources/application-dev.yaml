@@ -17,3 +17,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka/
+
+server:
+  host: localhost
+  gateway:
+    port: 19091
