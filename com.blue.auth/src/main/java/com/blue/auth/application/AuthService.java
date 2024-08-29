@@ -97,7 +97,15 @@ public class AuthService {
 
         user.setDeleted(LocalDateTime.now(), userName);
         userRepository.save(user);
+    }
 
+    public String getAuthority(String userName){
+        User user = userRepository.findByUserNameAndDeletedAtIsNull(userName).orElseThrow(
+                ()-> new IllegalArgumentException("사용자를 찾을 수 없습니다.")
+        );
+
+        String role = user.getRole().getAuthority();
+        return role;
     }
 
 }

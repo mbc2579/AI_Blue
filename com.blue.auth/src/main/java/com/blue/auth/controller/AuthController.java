@@ -46,6 +46,12 @@ public class AuthController {
         return createResponse(ResponseEntity.ok(true), userName);
     }
 
+    @GetMapping("/authority")
+    public String getAuthority(@RequestParam(name="userName") String userName){
+        String role= authService.getAuthority(userName);
+        return role;
+    }
+
     public <T>ResponseEntity<T> createResponse(ResponseEntity<T> response, String userName){
         HttpHeaders headers = HttpHeaders.writableHttpHeaders(response.getHeaders());
         headers.add("X-User-Name", userName);
