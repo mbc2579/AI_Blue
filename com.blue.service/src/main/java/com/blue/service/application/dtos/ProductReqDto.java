@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ProductReqDto {
+    private String description;
     private String productName;
     private Integer productPrice;
     private Boolean isVisible;
