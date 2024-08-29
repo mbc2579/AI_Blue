@@ -28,6 +28,10 @@ ext {
 }
 
 dependencies {
+	// JSON 파싱을 위한 org.json 라이브러리
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+
+
 	// queryDSL - Spring Boot 3.X 설정
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
