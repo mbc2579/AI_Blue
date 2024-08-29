@@ -13,7 +13,8 @@ import java.util.UUID;
 @Table(name = "p_stores")
 public class Store extends BaseEntity{
     @Id
-    private UUID storeId;
+    @GeneratedValue
+    private UUID storeId = UUID.randomUUID();
 
     private String userName;
     private String storeName;
@@ -30,5 +31,12 @@ public class Store extends BaseEntity{
                 .categoryId(requestDto.getCategoryId())
                 .userName(userName)
                 .build();
+    }
+
+    public void update(StoreReqDto requestDto) {
+        this.storeName = requestDto.getStoreName();
+        this.storeDescription = requestDto.getStoreDescription();
+        this.regionId = requestDto.getRegionId();
+        this.categoryId = requestDto.getCategoryId();
     }
 }
