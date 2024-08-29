@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +45,7 @@ public class OrderService {
         );
         if(!order.getUserName().equals(userName)){
             log.error("접근할 수 없음");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "접근할 수 없음");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
         return OrderResDto.from(order);
     }
@@ -73,7 +75,7 @@ public class OrderService {
         );
         if(!order.getUserName().equals(userName)){
             log.error("접근할 수 없음");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "접근할 수 없음");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
         // 주문 정보 수정 ( 현재는 review 상태 변경 )
         order.updateOrder(orderUpdateReqDto.getIsReviewed());
@@ -90,9 +92,18 @@ public class OrderService {
         );
         if(!order.getUserName().equals(userName)){
             log.error("접근할 수 없음");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "접근할 수 없음");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
         // 주문 삭제
+        LocalDateTime now = LocalDateTime.now();
+        LocalTime currentTime = now.toLocalTime();
+        LocalTime createdTime = order.getCreatedAt().toLocalTime();
+        long diffMin = Duration.between(createdTime, currentTime).isNegative() ?
+                Duration.between(createdTime, now).plusDays(1).toMinutes() : Duration.between(createdTime, currentTime).toMinutes();
+        if(diffMin >= 5 || !now.toLocalDate().equals(order.getCreatedAt().toLocalDate())){
+            log.error("주문 후 5분 초과로 취소 불가");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "주문 후 5분 초과로 취소 불가");
+        }
         order.setDeleted(LocalDateTime.now(), userName);
     }
 

@@ -46,7 +46,7 @@ public class PaymentService {
         });
         if(!payment.getUserName().equals(userName)){
             log.error("접근할 수 없음");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "접근할 수 없음");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
         return PaymentResDto.from(payment);
     }
@@ -74,7 +74,7 @@ public class PaymentService {
         });
         if(!payment.getUserName().equals(userName)){
             log.error("접근할 수 없음");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "접근할 수 없음");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
         //결제 정보 삭제
         payment.setDeleted(LocalDateTime.now(), userName);
