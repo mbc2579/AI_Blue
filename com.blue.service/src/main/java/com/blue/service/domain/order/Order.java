@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orderProducts;
 
 //    @ManyToOne
@@ -38,20 +39,23 @@ public class Order extends BaseEntity {
     @Column(name = "order_type")
     private OrderType orderType;
 
-    @Column(name = "is_reviewed")
-    private boolean isReviewed;
+//    @Column(name = "is_reviewed")
+//    private boolean isReviewed;
 
     public void addOrderProduct(OrderProduct orderProduct) {
         this.orderProducts.add(orderProduct);
+    }
+
+    public void updateOrderProducts(List<OrderProduct> updatedOrderProducts) {
+        this.orderProducts.clear();
+        for(OrderProduct orderProduct : updatedOrderProducts) {
+            addOrderProduct(orderProduct);
+        }
     }
 
     public void deleteOrderProduct(String userName) {
         for(OrderProduct orderProduct : this.orderProducts) {
             orderProduct.setDeleted(LocalDateTime.now(), userName);
         }
-    }
-
-    public void updateOrder(boolean isReviewed){
-        this.isReviewed = isReviewed;
     }
 }

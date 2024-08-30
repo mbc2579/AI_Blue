@@ -31,7 +31,7 @@ public class OrderCreateReqDto {
                 .userName(userName)
                 .destId(this.destId)
                 .orderType(this.orderType)
-                .isReviewed(false)
+//                .isReviewed(false)
                 .build();
     }
 }

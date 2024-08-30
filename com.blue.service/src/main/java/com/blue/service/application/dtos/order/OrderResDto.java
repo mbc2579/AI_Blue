@@ -22,7 +22,7 @@ public class OrderResDto {
     private List<OrderProductRequest> orderProducts;
     private UUID destId;
     private OrderType orderType;
-    private boolean isReviewed;
+//    private boolean isReviewed;
 
     public static OrderResDto from(Order order) {
         return OrderResDto.builder()
@@ -32,7 +32,7 @@ public class OrderResDto {
                 .orderProducts(OrderProductRequest.from(order.getOrderProducts()))
                 .destId(order.getDestId())
                 .orderType(order.getOrderType())
-                .isReviewed(order.isReviewed())
+//                .isReviewed(order.isReviewed())
                 .build();
     }
 }
