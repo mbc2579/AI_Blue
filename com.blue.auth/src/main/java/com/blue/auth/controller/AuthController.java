@@ -23,15 +23,13 @@ public class AuthController {
     @PostMapping("/logIn")
     public ResponseEntity<Boolean> logIn(@RequestBody LogInRequestDto requestDto, HttpServletResponse response){
         authService.logIn(requestDto, response);
-        String userName = requestDto.getUserName();
-        return createResponse(ResponseEntity.ok(true), userName);
+        return ResponseEntity.ok(true);
     }
 
     @PostMapping("/signUp")
     public ResponseEntity<Boolean> signUp(@Valid @RequestBody SignUpRequestDto requestDto){
         authService.signUp(requestDto);
-        String userName = requestDto.getUserName();
-        return createResponse(ResponseEntity.ok(true), userName);
+        return ResponseEntity.ok(true);
     }
 
     @PutMapping("/{userName}/edit")
@@ -43,18 +41,12 @@ public class AuthController {
     @DeleteMapping("/{userName}/withdraw")
     public ResponseEntity<Boolean> userWithdraw(@PathVariable String userName){
         authService.userWithdraw(userName);
-        return createResponse(ResponseEntity.ok(true), userName);
+        return ResponseEntity.ok(true);
     }
 
     @GetMapping("/authority")
     public String getAuthority(@RequestParam(name="userName") String userName){
         String role= authService.getAuthority(userName);
         return role;
-    }
-
-    public <T>ResponseEntity<T> createResponse(ResponseEntity<T> response, String userName){
-        HttpHeaders headers = HttpHeaders.writableHttpHeaders(response.getHeaders());
-        headers.add("X-User-Name", userName);
-        return new ResponseEntity<T>(response.getBody(), headers, response.getStatusCode());
     }
 }
