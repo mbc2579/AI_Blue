@@ -3,7 +3,13 @@ package com.blue.service.application;
 import com.blue.service.application.dtos.order.OrderCreateReqDto;
 import com.blue.service.application.dtos.order.OrderResDto;
 import com.blue.service.application.dtos.order.OrderUpdateReqDto;
+import com.blue.service.domain.Product;
+import com.blue.service.domain.ProductRepository;
+import com.blue.service.domain.Store;
+import com.blue.service.domain.StoreRepository;
 import com.blue.service.domain.order.Order;
+import com.blue.service.domain.order.OrderProduct;
+import com.blue.service.domain.order.OrderProductRequest;
 import com.blue.service.domain.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +35,37 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final StoreRepository storeRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public OrderResDto createOrder(OrderCreateReqDto orderCreateReqDto, String userName) {
-        Order order = orderCreateReqDto.toOrder(userName);
-        // Product 부분 개발이 완료되면 상품 주문 로직 추가 예정
+        Store store = storeRepository.findByStoreIdAndDeletedAtIsNull(orderCreateReqDto.getStoreId()).orElseThrow(()->{
+                    log.error("가게 정보를 찾을 수 없음");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "가게 정보를 찾을 수 없음");
+                }
+        );
+        Order order = orderCreateReqDto.toOrder(userName, store);
+
+        for(OrderProductRequest productRequest : orderCreateReqDto.getOrderProductRequests()){
+            Product product = productRepository.findByProductIdAndDeletedAtIsNull(productRequest.getProductId()).orElseThrow(()->{
+                        log.error("상품 정보를 찾을 수 없음");
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, "상품 정보를 찾을 수 없음");
+                    }
+            );
+
+            if(productRequest.getProductQuantity() <= 0) {
+                log.error("상품 수량이 잘못 되었음");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "상품 수량이 잘못 되었음");
+            }
+
+            order.addOrderProduct(OrderProduct.builder()
+                    .order(order)
+                    .product(product)
+                    .productQuantity(productRequest.getProductQuantity())
+                    .build());
+        }
+
         return OrderResDto.from(orderRepository.save(order));
     }
 
@@ -94,7 +126,7 @@ public class OrderService {
             log.error("접근할 수 없음");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
-        // 주문 삭제
+        // 주문 삭제 ( 5분이 넘어가면 주문 삭제 불가 )
         LocalDateTime now = LocalDateTime.now();
         LocalTime currentTime = now.toLocalTime();
         LocalTime createdTime = order.getCreatedAt().toLocalTime();
@@ -104,6 +136,10 @@ public class OrderService {
             log.error("주문 후 5분 초과로 취소 불가");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "주문 후 5분 초과로 취소 불가");
         }
+
+        // OrderProducts Soft Delete
+        order.deleteOrderProduct(userName);
+        // Order Soft Delete
         order.setDeleted(LocalDateTime.now(), userName);
     }
 
