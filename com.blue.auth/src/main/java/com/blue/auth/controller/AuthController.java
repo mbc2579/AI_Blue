@@ -3,6 +3,7 @@ package com.blue.auth.controller;
 import com.blue.auth.application.AuthService;
 import com.blue.auth.application.dtos.LogInRequestDto;
 import com.blue.auth.application.dtos.SignUpRequestDto;
+import com.blue.auth.application.dtos.TokenResponse;
 import com.blue.auth.application.dtos.UpdateRequestDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,9 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/logIn")
-    public ResponseEntity<Boolean> logIn(@RequestBody LogInRequestDto requestDto, HttpServletResponse response){
-        authService.logIn(requestDto, response);
-        return ResponseEntity.ok(true);
+    public ResponseEntity<TokenResponse> logIn(@RequestBody LogInRequestDto requestDto, HttpServletResponse response){
+        return ResponseEntity.ok(authService.logIn(requestDto, response));
     }
 
     @PostMapping("/signUp")

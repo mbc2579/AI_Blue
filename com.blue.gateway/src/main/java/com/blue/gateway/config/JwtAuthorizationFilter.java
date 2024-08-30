@@ -19,7 +19,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -30,13 +32,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private String secretKey;
     private Key key;
 
-    @Value("${service.jwt.exclude-url}")
-    private String excludeUrl;
+    private List<String> excludeUrls;
 
     @PostConstruct
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
+
+        excludeUrls = Arrays.asList("/auth/logIn", "/auth/signUp");
     }
 
     @Override
@@ -44,7 +47,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String path = req.getServletPath();
 
-        if(isExcludeUrl(path, excludeUrl)){
+        if(isExcludeUrl(path)){
             filterChain.doFilter(req, res);
             return;
         }
@@ -68,8 +71,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
-    private boolean isExcludeUrl(String path, String excludeUrl) {
-        return pathMatcher.isPattern(excludeUrl) && pathMatcher.match(excludeUrl, path);
+    private boolean isExcludeUrl(String path) {
+        for(String excludeUrl : excludeUrls) {
+            if(pathMatcher.isPattern(excludeUrl) && pathMatcher.match(excludeUrl, path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getTokenFromRequest(HttpServletRequest request) {
