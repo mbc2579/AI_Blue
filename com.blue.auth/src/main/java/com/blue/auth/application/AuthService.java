@@ -2,6 +2,7 @@ package com.blue.auth.application;
 
 import com.blue.auth.application.dtos.LogInRequestDto;
 import com.blue.auth.application.dtos.SignUpRequestDto;
+import com.blue.auth.application.dtos.TokenResponse;
 import com.blue.auth.application.dtos.UpdateRequestDto;
 import com.blue.auth.domain.User;
 import com.blue.auth.domain.UserRepository;
@@ -59,7 +60,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void logIn(LogInRequestDto requestDto, HttpServletResponse response){
+    public TokenResponse logIn(LogInRequestDto requestDto, HttpServletResponse response){
         String userName = requestDto.getUserName();
         String password = requestDto.getPassword();
 
@@ -73,6 +74,8 @@ public class AuthService {
 
         String token = jwtUtil.createToken(user.getUserName());
         jwtUtil.addJwtToCookie(token, response);
+
+        return new TokenResponse(token);
     }
 
     @Transactional
