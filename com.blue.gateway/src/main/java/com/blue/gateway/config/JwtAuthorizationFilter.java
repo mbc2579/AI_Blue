@@ -53,10 +53,14 @@ public class JwtAuthorizationFilter implements GlobalFilter{
             String jwt = authHeader.substring(7);
 
             try {
-                Jwts.parserBuilder()
+                Claims claims = Jwts.parserBuilder()
                         .setSigningKey(secretKey)
                         .build()
-                        .parseClaimsJws(jwt);
+                        .parseClaimsJws(jwt)
+                        .getBody();
+
+                String userName = claims.getSubject();
+                exchange.getRequest().mutate().header("X-User-Name", userName);
 
                 return chain.filter(exchange);
             } catch (ExpiredJwtException ex) {
