@@ -46,7 +46,8 @@ public class JwtAuthorizationFilter implements GlobalFilter{
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
 
-        excludeUrls = Arrays.asList("/api/auth/logIn", "/api/auth/signUp");
+        excludeUrls = Arrays.asList("/api/auth/logIn", "/api/auth/signUp", "/webjars", "/swagger-ui.html",
+                "/api/auth/v3/api-docs", "/api/service/v3/api-docs");
 
         customerRules = new ArrayList<>();
         customerRules.add(new AuthRule("/api/auth/authority", Set.of(HttpMethod.GET)));
