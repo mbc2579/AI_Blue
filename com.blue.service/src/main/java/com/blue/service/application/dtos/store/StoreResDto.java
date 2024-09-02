@@ -1,6 +1,6 @@
-package com.blue.service.application.dtos;
+package com.blue.service.application.dtos.store;
 
-import com.blue.service.domain.Store;
+import com.blue.service.domain.store.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

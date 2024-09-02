@@ -1,8 +1,8 @@
 package com.blue.service.controller;
 
 import com.blue.service.application.ReviewService;
-import com.blue.service.application.dtos.ReviewReqDto;
-import com.blue.service.application.dtos.ReviewResDto;
+import com.blue.service.application.dtos.review.ReviewReqDto;
+import com.blue.service.application.dtos.review.ReviewResDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

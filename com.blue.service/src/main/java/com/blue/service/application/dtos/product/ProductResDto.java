@@ -1,6 +1,6 @@
-package com.blue.service.application.dtos;
+package com.blue.service.application.dtos.product;
 
-import com.blue.service.domain.Product;
+import com.blue.service.domain.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

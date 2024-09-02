@@ -1,7 +1,9 @@
-package com.blue.service.domain;
+package com.blue.service.domain.review;
 
-import com.blue.service.application.dtos.ReviewReqDto;
+import com.blue.service.application.dtos.review.ReviewReqDto;
+import com.blue.service.domain.BaseEntity;
 import com.blue.service.domain.order.Order;
+import com.blue.service.domain.store.Store;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "p_reviews")
-public class Review extends BaseEntity{
+public class Review extends BaseEntity {
     @Id
     @GeneratedValue
     private UUID reviewId = UUID.randomUUID();
