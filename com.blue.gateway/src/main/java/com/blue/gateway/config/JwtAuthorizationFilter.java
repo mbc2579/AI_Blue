@@ -1,5 +1,7 @@
 package com.blue.gateway.config;
 
+import com.blue.gateway.infrastructure.AuthClient;
+import com.blue.gateway.infrastructure.AuthRule;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -7,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
@@ -15,12 +18,12 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter implements GlobalFilter{
+
+    private AuthClient authClient;
 
     private PathMatcher pathMatcher = new AntPathMatcher();
 
@@ -30,17 +33,44 @@ public class JwtAuthorizationFilter implements GlobalFilter{
 
     private List<String> excludeUrls;
 
+    //CUSTOMER가 접근할 수 없는 api
+    private List<AuthRule> customerRules;
+
+    //OWNER가 접근할 수 없는 api
+    private List<AuthRule> ownerRules;
+
+
+
     @PostConstruct
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
 
-        excludeUrls = Arrays.asList("/auth/logIn", "/auth/signUp");
+        excludeUrls = Arrays.asList("/api/auth/logIn", "/api/auth/signUp", "/webjars", "/swagger-ui.html",
+                "/api/auth/v3/api-docs", "/api/service/v3/api-docs");
+
+        customerRules = new ArrayList<>();
+        customerRules.add(new AuthRule("/api/auth/authority", Set.of(HttpMethod.GET)));
+        customerRules.add(new AuthRule("/api/stores/**", Set.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE)));
+        customerRules.add(new AuthRule("/api/products/**", Set.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE)));
+        customerRules.add(new AuthRule("/api/payments/**", Set.of(HttpMethod.GET)));
+
+
+        ownerRules = new ArrayList<>();
+        ownerRules.add(new AuthRule("/api/auth/authority", Set.of(HttpMethod.GET)));
+        ownerRules.add(new AuthRule("/api/destination/**", Set.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.GET)));
+        ownerRules.add(new AuthRule("/api/stores/{storeId}/reviews", Set.of(HttpMethod.POST)));
+        ownerRules.add(new AuthRule("/api/stores/{storeId}/reviews/{reviewId}", Set.of(HttpMethod.PUT)));
+        ownerRules.add(new AuthRule("/api/orders", Set.of(HttpMethod.POST)));
+        ownerRules.add(new AuthRule("/api/payments", Set.of(HttpMethod.POST)));
+        ownerRules.add(new AuthRule("/api/payments/{orderId}", Set.of(HttpMethod.DELETE)));
+
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String path = exchange.getRequest().getPath().toString();
+        String path = exchange.getRequest().getURI().getPath();
+        log.info("@@@@@@@@@@@@PATH : " + path);
 
 
         if (isExcludeUrl(path)) {
@@ -48,9 +78,11 @@ public class JwtAuthorizationFilter implements GlobalFilter{
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+        log.info("@@@@@@@@@@@@Auth Header : " + authHeader);
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
+            log.info("@@@@@@@@@@@@JWT Token : " + jwt);
 
             try {
                 Claims claims = Jwts.parserBuilder()
@@ -62,7 +94,15 @@ public class JwtAuthorizationFilter implements GlobalFilter{
                 String userName = claims.getSubject();
                 exchange.getRequest().mutate().header("X-User-Name", userName);
 
-                return chain.filter(exchange);
+                HttpMethod httpMethod = exchange.getRequest().getMethod();
+                String role = (authClient.getAuthority(userName)).getAuthority();
+
+                if(hasAccess(path, httpMethod, role)){
+                    return chain.filter(exchange);
+                }
+
+
+
             } catch (ExpiredJwtException ex) {
                 log.error("JWT token has expired");
             } catch (UnsupportedJwtException ex) {
@@ -86,11 +126,34 @@ public class JwtAuthorizationFilter implements GlobalFilter{
 
     private boolean isExcludeUrl(String path) {
         for(String excludeUrl : excludeUrls) {
-            if(pathMatcher.isPattern(excludeUrl) && pathMatcher.match(excludeUrl, path)) {
+            if(excludeUrl.equals(path)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean hasAccess(String endPoint, HttpMethod method, String role){
+        if(role.equals("CUSTOMER")){
+            for(AuthRule rule : customerRules){
+                if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
+                    return false;
+                }
+            }
+            return true;
+        }else if(role.equals("OWNER")){
+            for(AuthRule rule : ownerRules){
+                if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
+                    return false;
+                }
+            }
+            return true;
+        }else if(role.equals("MANAGER")||role.equals("MASTER")){
+            return true;
+        }
+
+        return false;
+
     }
 
 }
