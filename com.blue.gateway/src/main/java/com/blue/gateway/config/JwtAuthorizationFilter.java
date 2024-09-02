@@ -136,21 +136,23 @@ public class JwtAuthorizationFilter implements GlobalFilter{
         if(role.equals("CUSTOMER")){
             for(AuthRule rule : customerRules){
                 if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }else if(role.equals("OWNER")){
             for(AuthRule rule : ownerRules){
                 if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
-                    return true;
+                    return false;
                 }
             }
-            return false;
+            return true;
         }else if(role.equals("MANAGER")||role.equals("MASTER")){
             return true;
         }
+
         return false;
+
     }
 
 }
