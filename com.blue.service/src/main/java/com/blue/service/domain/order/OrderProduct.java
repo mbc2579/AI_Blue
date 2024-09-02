@@ -1,7 +1,7 @@
 package com.blue.service.domain.order;
 
 import com.blue.service.domain.BaseEntity;
-import com.blue.service.domain.Product;
+import com.blue.service.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;

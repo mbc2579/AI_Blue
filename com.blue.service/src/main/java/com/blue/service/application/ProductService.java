@@ -1,9 +1,12 @@
 package com.blue.service.application;
 
-import com.blue.service.application.dtos.ProductReqDto;
-import com.blue.service.application.dtos.ProductResDto;
-import com.blue.service.application.dtos.StoreResDto;
-import com.blue.service.domain.*;
+import com.blue.service.application.dtos.product.ProductReqDto;
+import com.blue.service.application.dtos.product.ProductResDto;
+import com.blue.service.domain.product.DescriptionGenerator;
+import com.blue.service.domain.product.Product;
+import com.blue.service.domain.product.ProductRepository;
+import com.blue.service.domain.store.Store;
+import com.blue.service.domain.store.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

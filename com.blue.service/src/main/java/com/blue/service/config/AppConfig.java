@@ -1,6 +1,6 @@
 package com.blue.service.config;
 
-import com.blue.service.domain.DescriptionGenerator;
+import com.blue.service.domain.product.DescriptionGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

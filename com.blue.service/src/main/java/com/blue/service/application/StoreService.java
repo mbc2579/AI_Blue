@@ -1,9 +1,9 @@
 package com.blue.service.application;
 
-import com.blue.service.application.dtos.StoreReqDto;
-import com.blue.service.application.dtos.StoreResDto;
-import com.blue.service.domain.Store;
-import com.blue.service.domain.StoreRepository;
+import com.blue.service.application.dtos.store.StoreReqDto;
+import com.blue.service.application.dtos.store.StoreResDto;
+import com.blue.service.domain.store.Store;
+import com.blue.service.domain.store.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

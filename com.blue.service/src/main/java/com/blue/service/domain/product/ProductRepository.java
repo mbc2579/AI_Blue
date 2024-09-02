@@ -1,4 +1,4 @@
-package com.blue.service.domain;
+package com.blue.service.domain.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

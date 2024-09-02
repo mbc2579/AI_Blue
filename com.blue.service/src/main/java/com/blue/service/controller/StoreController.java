@@ -1,10 +1,10 @@
 package com.blue.service.controller;
 
-import com.blue.service.application.dtos.StoreReqDto;
-import com.blue.service.application.dtos.StoreResDto;
+import com.blue.service.application.dtos.store.StoreReqDto;
+import com.blue.service.application.dtos.store.StoreResDto;
 import com.blue.service.application.StoreService;
-import com.blue.service.domain.Store;
-import com.blue.service.domain.StoreRepository;
+import com.blue.service.domain.store.Store;
+import com.blue.service.domain.store.StoreRepository;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

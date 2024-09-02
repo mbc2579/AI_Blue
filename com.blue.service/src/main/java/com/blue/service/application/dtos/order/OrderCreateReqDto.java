@@ -1,6 +1,6 @@
 package com.blue.service.application.dtos.order;
 
-import com.blue.service.domain.Store;
+import com.blue.service.domain.store.Store;
 import com.blue.service.domain.order.Order;
 import com.blue.service.domain.order.OrderProductRequest;
 import com.blue.service.domain.order.OrderType;

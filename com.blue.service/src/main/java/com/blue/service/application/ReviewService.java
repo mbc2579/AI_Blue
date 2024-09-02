@@ -1,11 +1,11 @@
 package com.blue.service.application;
 
-import com.blue.service.application.dtos.ReviewReqDto;
-import com.blue.service.application.dtos.ReviewResDto;
-import com.blue.service.domain.Review;
+import com.blue.service.application.dtos.review.ReviewReqDto;
+import com.blue.service.application.dtos.review.ReviewResDto;
+import com.blue.service.domain.review.Review;
 import com.blue.service.domain.ReviewRepository;
-import com.blue.service.domain.Store;
-import com.blue.service.domain.StoreRepository;
+import com.blue.service.domain.store.Store;
+import com.blue.service.domain.store.StoreRepository;
 import com.blue.service.domain.order.Order;
 import com.blue.service.domain.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

@@ -1,8 +1,8 @@
 package com.blue.service.controller;
 
 import com.blue.service.application.ProductService;
-import com.blue.service.application.dtos.ProductReqDto;
-import com.blue.service.application.dtos.ProductResDto;
+import com.blue.service.application.dtos.product.ProductReqDto;
+import com.blue.service.application.dtos.product.ProductResDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
