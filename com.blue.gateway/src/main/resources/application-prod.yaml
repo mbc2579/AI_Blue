@@ -14,8 +14,9 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - 'http://${server.host}:19092'
-              - 'http://${server.host}:19093'
+              - 'http://${server.swagger.host}:${server.gateway.port}'
+              - 'http://${server.swagger.host}:19092'
+              - 'http://${server.swagger.host}:19093'
 
 eureka:
   client:
@@ -26,3 +27,5 @@ server:
   host: ${SERVER_HOST}
   gateway:
     port: ${GATEWAY_PORT}
+  swagger:
+    host: ${SERVER_SWAGGER_HOST}

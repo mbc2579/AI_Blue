@@ -22,7 +22,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
-    @Value("${server.host}")
+    @Value("${server.swagger.host}")
     String host;
 
     @Value("${server.port}")

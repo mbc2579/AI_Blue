@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class WebCorsConfig implements WebMvcConfigurer {
 
-    @Value("${server.host}")
+    @Value("${server.swagger.host}")
     String host;
 
     @Value("${server.port}")

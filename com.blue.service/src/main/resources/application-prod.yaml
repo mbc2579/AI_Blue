@@ -22,3 +22,5 @@ server:
   host: ${SERVER_HOST}
   gateway:
     port: ${GATEWAY_PORT}
+  swagger:
+    host: ${SERVER_SWAGGER_HOST}
