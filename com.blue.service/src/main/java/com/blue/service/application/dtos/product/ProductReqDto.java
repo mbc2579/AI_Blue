@@ -1,4 +1,4 @@
-package com.blue.service.application.dtos;
+package com.blue.service.application.dtos.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

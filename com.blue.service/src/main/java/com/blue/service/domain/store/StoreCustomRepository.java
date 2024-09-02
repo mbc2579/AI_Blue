@@ -1,4 +1,4 @@
-package com.blue.service.domain;
+package com.blue.service.domain.store;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

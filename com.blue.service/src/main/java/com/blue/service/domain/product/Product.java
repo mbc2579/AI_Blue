@@ -1,6 +1,8 @@
-package com.blue.service.domain;
+package com.blue.service.domain.product;
 
-import com.blue.service.application.dtos.ProductReqDto;
+import com.blue.service.application.dtos.product.ProductReqDto;
+import com.blue.service.domain.BaseEntity;
+import com.blue.service.domain.store.Store;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
 @Table(name = "p_products")
-public class Product extends BaseEntity{
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue
     private UUID productId = UUID.randomUUID();

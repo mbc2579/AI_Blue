@@ -1,5 +1,6 @@
 package com.blue.service.domain;
 
+import com.blue.service.domain.review.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

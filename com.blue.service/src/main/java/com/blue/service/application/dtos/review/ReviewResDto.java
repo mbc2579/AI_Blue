@@ -1,6 +1,6 @@
-package com.blue.service.application.dtos;
+package com.blue.service.application.dtos.review;
 
-import com.blue.service.domain.Review;
+import com.blue.service.domain.review.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
