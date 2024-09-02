@@ -1,0 +1,31 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: default
+      password: ${REDIS_PASS}
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - 'http://${server.swagger.host}:${server.gateway.port}'
+              - 'http://${server.swagger.host}:19092'
+              - 'http://${server.swagger.host}:19093'
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.host}:19090/eureka/
+
+server:
+  host: ${SERVER_HOST}
+  gateway:
+    port: ${GATEWAY_PORT}
+  swagger:
+    host: ${SERVER_SWAGGER_HOST}

@@ -1,9 +1,9 @@
 package com.blue.service.config;
 
-import com.blue.service.domain.QProduct;
-import com.blue.service.domain.QStore;
 import com.blue.service.domain.order.QOrder;
 import com.blue.service.domain.payment.QPayment;
+import com.blue.service.domain.product.QProduct;
+import com.blue.service.domain.store.QStore;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;

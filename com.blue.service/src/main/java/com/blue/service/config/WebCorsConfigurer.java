@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebCorsConfigurer implements WebMvcConfigurer {
 
-    @Value("${server.host}")
+    @Value("${server.swagger.host}")
     String host;
 
     @Value("${server.port}")

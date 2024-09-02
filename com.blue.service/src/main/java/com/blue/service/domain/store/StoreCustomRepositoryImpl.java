@@ -11,7 +11,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static com.blue.service.config.QueryDslUtil.getAllOrderSpecifiers;
-import static com.blue.service.domain.QStore.store;
+import static com.blue.service.domain.store.QStore.store;
 
 @RequiredArgsConstructor
 public class StoreCustomRepositoryImpl implements StoreCustomRepository {
