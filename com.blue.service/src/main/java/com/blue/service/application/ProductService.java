@@ -8,12 +8,15 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +37,23 @@ public class ProductService {
     public List<ProductResDto> getProducts(UUID storeId) {
         List<Product> productList = productRepository.findAllByStore_StoreIdAndDeletedAtIsNullAndIsVisibleTrueOrderByCreatedAt(storeId);
         return productList.stream().map(ProductResDto::new).collect(Collectors.toList());
+    }
+
+    // 메뉴 검색
+    public List<ProductResDto> searchProduct(String userName, int page, int limit, Boolean isAsc, String orderBy, String keyword, String productName) {
+        Sort.Direction direction;
+
+        if(isAsc) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(page-1, limit, Sort.by(direction, orderBy));
+
+        Page<ProductResDto> productPage = productRepository.searchByProductName(userName, productName, keyword, pageable).map(ProductResDto::from);
+
+        return productPage.toList();
     }
 
     // 메뉴 상세 조회

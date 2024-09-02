@@ -2,12 +2,14 @@ package com.blue.service.application.dtos;
 
 import com.blue.service.domain.Store;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoreResDto {
@@ -23,5 +25,15 @@ public class StoreResDto {
         this.storeDescription = store.getStoreDescription();
         this.regionId = store.getRegionId();
         this.categoryId = store.getCategoryId();
+    }
+
+    public static StoreResDto from(Store store) {
+        return StoreResDto.builder()
+                .storeId(store.getStoreId())
+                .storeName(store.getStoreName())
+                .storeDescription(store.getStoreDescription())
+                .regionId(store.getRegionId())
+                .categoryId(store.getCategoryId())
+                .build();
     }
 }

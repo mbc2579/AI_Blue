@@ -2,12 +2,14 @@ package com.blue.service.application.dtos;
 
 import com.blue.service.domain.Product;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResDto {
@@ -21,5 +23,14 @@ public class ProductResDto {
         this.productName = product.getProductName();
         this.productPrice = product.getProductPrice().toString();
         this.description = product.getDescription();
+    }
+
+    public static ProductResDto from(Product product) {
+        return ProductResDto.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .productPrice(String.valueOf(product.getProductPrice()))
+                .description(product.getDescription())
+                .build();
     }
 }
