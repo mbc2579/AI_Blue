@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     // 임시로 정해둔 Key 값
-    private final String ADMIN_TOKEN = "ADMIN";
+    private final String MANAGER_TOKEN = "MANAGER";
     private final String MASTER_TOKEN = "MASTER";
 
     @Transactional
@@ -47,7 +47,7 @@ public class AuthService {
         }
 
         if(!token.isEmpty()){
-            if(token.equals(ADMIN_TOKEN)&&role.equals(UserRoleEnum.ADMIN)) {
+            if(token.equals(MANAGER_TOKEN)&&role.equals(UserRoleEnum.ADMIN)) {
                 role = UserRoleEnum.ADMIN;
             }else if(token.equals(MASTER_TOKEN)&&role.equals(UserRoleEnum.MASTER)) {
                 role = UserRoleEnum.MASTER;
