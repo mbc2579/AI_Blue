@@ -1,18 +1,21 @@
 package com.blue.service.application;
 
-import com.blue.service.application.dtos.ProductResDto;
 import com.blue.service.application.dtos.StoreReqDto;
 import com.blue.service.application.dtos.StoreResDto;
-import com.blue.service.domain.Product;
 import com.blue.service.domain.Store;
 import com.blue.service.domain.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +31,23 @@ public class StoreService {
         Store store = Store.createStore(requestDto, userName);
         Store savedStore = storeRepository.save(store);
         return toResponseDto(savedStore);
+    }
+
+    // 가게 검색
+    public List<StoreResDto> searchStore(String userName, int page, int limit, Boolean isAsc, String orderBy, String keyword, String storeName) {
+        Sort.Direction direction;
+
+        if(isAsc) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(page-1, limit, Sort.by(direction, orderBy));
+
+        Page<StoreResDto> storePage = storeRepository.searchByStoreName(userName, storeName, keyword, pageable).map(StoreResDto::from);
+
+        return storePage.toList();
     }
 
     // 가게 상세 조회
