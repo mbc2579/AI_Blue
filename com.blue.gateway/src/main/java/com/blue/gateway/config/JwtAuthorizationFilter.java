@@ -46,29 +46,30 @@ public class JwtAuthorizationFilter implements GlobalFilter{
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
 
-        excludeUrls = Arrays.asList("/auth/logIn", "/auth/signUp");
+        excludeUrls = Arrays.asList("/api/auth/logIn", "/api/auth/signUp");
 
         customerRules = new ArrayList<>();
-        customerRules.add(new AuthRule("/auth/authority", Set.of(HttpMethod.GET)));
-        customerRules.add(new AuthRule("/stores/**", Set.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE)));
-        customerRules.add(new AuthRule("/products/**", Set.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE)));
-        customerRules.add(new AuthRule("/payments/**", Set.of(HttpMethod.GET)));
+        customerRules.add(new AuthRule("/api/auth/authority", Set.of(HttpMethod.GET)));
+        customerRules.add(new AuthRule("/api/stores/**", Set.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE)));
+        customerRules.add(new AuthRule("/api/products/**", Set.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE)));
+        customerRules.add(new AuthRule("/api/payments/**", Set.of(HttpMethod.GET)));
 
 
         ownerRules = new ArrayList<>();
-        ownerRules.add(new AuthRule("/auth/authority", Set.of(HttpMethod.GET)));
-        ownerRules.add(new AuthRule("/destination/**", Set.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.GET)));
-        ownerRules.add(new AuthRule("/stores/{storeId}/reviews", Set.of(HttpMethod.POST)));
-        ownerRules.add(new AuthRule("/stores/{storeId}/reviews/{reviewId}", Set.of(HttpMethod.PUT)));
-        ownerRules.add(new AuthRule("/orders", Set.of(HttpMethod.POST)));
-        ownerRules.add(new AuthRule("/payments", Set.of(HttpMethod.POST)));
-        ownerRules.add(new AuthRule("/payments/{orderId}", Set.of(HttpMethod.DELETE)));
+        ownerRules.add(new AuthRule("/api/auth/authority", Set.of(HttpMethod.GET)));
+        ownerRules.add(new AuthRule("/api/destination/**", Set.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.GET)));
+        ownerRules.add(new AuthRule("/api/stores/{storeId}/reviews", Set.of(HttpMethod.POST)));
+        ownerRules.add(new AuthRule("/api/stores/{storeId}/reviews/{reviewId}", Set.of(HttpMethod.PUT)));
+        ownerRules.add(new AuthRule("/api/orders", Set.of(HttpMethod.POST)));
+        ownerRules.add(new AuthRule("/api/payments", Set.of(HttpMethod.POST)));
+        ownerRules.add(new AuthRule("/api/payments/{orderId}", Set.of(HttpMethod.DELETE)));
 
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String path = exchange.getRequest().getPath().toString();
+        String path = exchange.getRequest().getURI().getPath();
+        log.info("@@@@@@@@@@@@PATH : " + path);
 
 
         if (isExcludeUrl(path)) {
@@ -76,9 +77,11 @@ public class JwtAuthorizationFilter implements GlobalFilter{
         }
 
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+        log.info("@@@@@@@@@@@@Auth Header : " + authHeader);
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
+            log.info("@@@@@@@@@@@@JWT Token : " + jwt);
 
             try {
                 Claims claims = Jwts.parserBuilder()
@@ -122,7 +125,7 @@ public class JwtAuthorizationFilter implements GlobalFilter{
 
     private boolean isExcludeUrl(String path) {
         for(String excludeUrl : excludeUrls) {
-            if(pathMatcher.isPattern(excludeUrl) && pathMatcher.match(excludeUrl, path)) {
+            if(excludeUrl.equals(path)) {
                 return true;
             }
         }
