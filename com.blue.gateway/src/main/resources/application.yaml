@@ -1,0 +1,69 @@
+server:
+  port: 19091
+spring:
+  profiles:
+    default: dev
+  main:
+    web-application-type: reactive
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allow-credentials: true
+            allowedHeaders:
+              - x-requested-with
+              - Authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+              - X-User-Name
+            exposedHeaders:
+              - x-requested-with
+              - Authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+              - X-User-Name
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+      routes:
+        - id: auth
+          uri: lb://auth
+          predicates:
+            - Path=/api/auth/**
+        - id: service
+          uri: lb://service
+          predicates:
+            - Path=/api/**
+      discovery:
+        locator:
+          enabled: true
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /api/service/v3/api-docs
+        name: Team Blue Service API 문서
+      - url: /api/auth/v3/api-docs
+        name: Team Blue Auth API 문서
+  api-docs:
+    enabled: true
+
+service:
+  jwt:
+    secret-key: "401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429080fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1"
