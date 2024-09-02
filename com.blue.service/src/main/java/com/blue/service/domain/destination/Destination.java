@@ -29,8 +29,9 @@ public class Destination extends BaseEntity {
     @Column(name="request", length=500)
     private String request;
 
-    public void updateAddress(String address) {
+    public void updateAddress(String address, String request) {
         this.address = address;
+        this.request = request;
     }
 
 
