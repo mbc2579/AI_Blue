@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -109,8 +110,28 @@ public class OrderService {
             log.error("접근할 수 없음");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근할 수 없음");
         }
-        // 주문 정보 수정 ( 현재는 review 상태 변경 )
-        order.updateOrder(orderUpdateReqDto.getIsReviewed());
+        // 주문 정보 수정 ( 상품 리스트 수정 )
+        List<OrderProduct> updatedOrderProducts = new ArrayList<>();
+        for(OrderProductRequest productRequest : orderUpdateReqDto.getOrderProductRequests()){
+            Product product = productRepository.findByProductIdAndDeletedAtIsNull(productRequest.getProductId()).orElseThrow(()->{
+                        log.error("상품 정보를 찾을 수 없음");
+                        return new ResponseStatusException(HttpStatus.NOT_FOUND, "상품 정보를 찾을 수 없음");
+                    }
+            );
+
+            if(productRequest.getProductQuantity() <= 0) {
+                log.error("상품 수량이 잘못 되었음");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "상품 수량이 잘못 되었음");
+            }
+
+            updatedOrderProducts.add(OrderProduct.builder()
+                    .order(order)
+                    .product(product)
+                    .productQuantity(productRequest.getProductQuantity())
+                    .build());
+        }
+        order.updateOrderProducts(updatedOrderProducts);
+
         return OrderResDto.from(order);
     }
 

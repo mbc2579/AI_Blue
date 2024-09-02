@@ -4,8 +4,7 @@ import com.blue.service.domain.BaseEntity;
 import com.blue.service.domain.Product;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -14,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@SQLRestriction("deleted_at IS NULL")
 @Entity(name = "p_order_products")
 public class OrderProduct extends BaseEntity {
 
