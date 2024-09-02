@@ -1,9 +1,9 @@
 package com.blue.auth.domain;
 
 public enum UserRoleEnum {
-    USER(Authority.CUSTOMER),
+    CUSTOMER(Authority.CUSTOMER),
     OWNER(Authority.OWNER),
-    ADMIN(Authority.MANAGER),
+    MANAGER(Authority.MANAGER),
     MASTER(Authority.MASTER);
 
     private final String authority;
