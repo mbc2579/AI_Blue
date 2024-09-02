@@ -15,6 +15,7 @@ spring:
           '[/**]':
             allowedOrigins:
               - 'http://localhost:19092'
+              - 'http://localhost:19093'
 eureka:
   client:
     service-url:

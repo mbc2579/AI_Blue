@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/blue
+    username: ${POSTGRESQL_ID}
+    password: ${POSTGRESQL_PASS}
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: default
+      password: ${REDIS_PASS}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${server.host}:19090/eureka/
+
+server:
+  host: ${SERVER_HOST}
+  gateway:
+    port: ${GATEWAY_PORT}
