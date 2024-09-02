@@ -47,8 +47,8 @@ public class AuthService {
         }
 
         if(!token.isEmpty()){
-            if(token.equals(MANAGER_TOKEN)&&role.equals(UserRoleEnum.ADMIN)) {
-                role = UserRoleEnum.ADMIN;
+            if(token.equals(MANAGER_TOKEN)&&role.equals(UserRoleEnum.MANAGER)) {
+                role = UserRoleEnum.MANAGER;
             }else if(token.equals(MASTER_TOKEN)&&role.equals(UserRoleEnum.MASTER)) {
                 role = UserRoleEnum.MASTER;
             }else {

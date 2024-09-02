@@ -1,6 +1,6 @@
 package com.blue.gateway.config;
 
-import com.blue.gateway.infrastructure.AuthClient;
+import com.blue.gateway.AuthService;
 import com.blue.gateway.infrastructure.AuthRule;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -9,7 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
@@ -21,9 +24,10 @@ import java.security.Key;
 import java.util.*;
 
 @Slf4j(topic = "JWT 검증 및 인가")
+@Component
 public class JwtAuthorizationFilter implements GlobalFilter{
 
-    private AuthClient authClient;
+    private AuthService authService;
 
     private PathMatcher pathMatcher = new AntPathMatcher();
 
@@ -39,7 +43,9 @@ public class JwtAuthorizationFilter implements GlobalFilter{
     //OWNER가 접근할 수 없는 api
     private List<AuthRule> ownerRules;
 
-
+    public JwtAuthorizationFilter(@Lazy AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostConstruct
     public void init() {
@@ -92,13 +98,19 @@ public class JwtAuthorizationFilter implements GlobalFilter{
                         .getBody();
 
                 String userName = claims.getSubject();
-                exchange.getRequest().mutate().header("X-User-Name", userName);
+                log.info("@@@@@@@@@@@@User Name : " + userName);
+                exchange.getRequest().mutate().header("X-User-Name", userName).build();
 
                 HttpMethod httpMethod = exchange.getRequest().getMethod();
-                String role = (authClient.getAuthority(userName)).getAuthority();
+                String role = authService.getAuthority(userName);
+                log.info("@@@@@@@@@@@@User Role : " + role);
 
                 if(hasAccess(path, httpMethod, role)){
                     return chain.filter(exchange);
+                }else {
+                    exchange.getResponse()
+                            .setStatusCode(HttpStatus.FORBIDDEN);
+                    return exchange.getResponse().setComplete();
                 }
 
 
@@ -136,16 +148,40 @@ public class JwtAuthorizationFilter implements GlobalFilter{
     private boolean hasAccess(String endPoint, HttpMethod method, String role){
         if(role.equals("CUSTOMER")){
             for(AuthRule rule : customerRules){
-                if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
-                    return false;
+                String endpointPattern = rule.getEndpointPattern();
+
+                if (endpointPattern.endsWith("/**")) {
+                    String prefix = endpointPattern.replace("/**", "");
+                    if (endPoint.startsWith(prefix) && rule.getDeniedMethods().contains(method)) {
+                        return false;
+                    }
+                } else {
+                    if (endPoint.equals(endpointPattern) && rule.getDeniedMethods().contains(method)) {
+                        return false;
+                    }
                 }
+//                if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
+//                    return false;
+//                }
             }
             return true;
         }else if(role.equals("OWNER")){
             for(AuthRule rule : ownerRules){
-                if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
-                    return false;
+                String endpointPattern = rule.getEndpointPattern();
+
+                if (endpointPattern.endsWith("/**")) {
+                    String prefix = endpointPattern.replace("/**", "");
+                    if (endPoint.startsWith(prefix) && rule.getDeniedMethods().contains(method)) {
+                        return false;
+                    }
+                } else {
+                    if (endPoint.equals(endpointPattern) && rule.getDeniedMethods().contains(method)) {
+                        return false;
+                    }
                 }
+//                if(endPoint.matches(rule.getEndpointPattern()) && rule.getDeniedMethods().contains(method)){
+//                    return false;
+//                }
             }
             return true;
         }else if(role.equals("MANAGER")||role.equals("MASTER")){
