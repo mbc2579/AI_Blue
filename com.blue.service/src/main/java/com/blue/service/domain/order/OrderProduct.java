@@ -13,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@SQLRestriction("deleted_at IS NULL")
 @Entity(name = "p_order_products")
 public class OrderProduct extends BaseEntity {
 
