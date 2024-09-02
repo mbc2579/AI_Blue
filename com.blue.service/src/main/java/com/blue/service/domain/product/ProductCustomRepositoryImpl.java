@@ -12,8 +12,8 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static com.blue.service.config.QueryDslUtil.getAllOrderSpecifiers;
-import static com.blue.service.domain.QProduct.product;
-import static com.blue.service.domain.QStore.store;
+import static com.blue.service.domain.product.QProduct.product;
+import static com.blue.service.domain.store.QStore.store;
 
 @Slf4j
 @RequiredArgsConstructor
