@@ -3,6 +3,7 @@ package com.blue.auth.controller;
 import com.blue.auth.application.AuthService;
 import com.blue.auth.application.dtos.LogInRequestDto;
 import com.blue.auth.application.dtos.SignUpRequestDto;
+import com.blue.auth.application.dtos.TokenResponse;
 import com.blue.auth.application.dtos.UpdateRequestDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,17 +22,14 @@ public class AuthController {
     }
 
     @PostMapping("/logIn")
-    public ResponseEntity<Boolean> logIn(@RequestBody LogInRequestDto requestDto, HttpServletResponse response){
-        authService.logIn(requestDto, response);
-        String userName = requestDto.getUserName();
-        return createResponse(ResponseEntity.ok(true), userName);
+    public ResponseEntity<TokenResponse> logIn(@RequestBody LogInRequestDto requestDto, HttpServletResponse response){
+        return ResponseEntity.ok(authService.logIn(requestDto, response));
     }
 
     @PostMapping("/signUp")
     public ResponseEntity<Boolean> signUp(@Valid @RequestBody SignUpRequestDto requestDto){
         authService.signUp(requestDto);
-        String userName = requestDto.getUserName();
-        return createResponse(ResponseEntity.ok(true), userName);
+        return ResponseEntity.ok(true);
     }
 
     @PutMapping("/{userName}/edit")
@@ -43,18 +41,12 @@ public class AuthController {
     @DeleteMapping("/{userName}/withdraw")
     public ResponseEntity<Boolean> userWithdraw(@PathVariable String userName){
         authService.userWithdraw(userName);
-        return createResponse(ResponseEntity.ok(true), userName);
+        return ResponseEntity.ok(true);
     }
 
     @GetMapping("/authority")
     public String getAuthority(@RequestParam(name="userName") String userName){
         String role= authService.getAuthority(userName);
         return role;
-    }
-
-    public <T>ResponseEntity<T> createResponse(ResponseEntity<T> response, String userName){
-        HttpHeaders headers = HttpHeaders.writableHttpHeaders(response.getHeaders());
-        headers.add("X-User-Name", userName);
-        return new ResponseEntity<T>(response.getBody(), headers, response.getStatusCode());
     }
 }
